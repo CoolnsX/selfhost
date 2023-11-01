@@ -72,7 +72,7 @@ services:
       - "9980:9980"
     environment:
       - "extra_params=--o:ssl.enable=false --o:ssl.termination=true"
-      - 'domain=cloud.coolans.dev'
+      - 'domain=nextcloud.example.com' #point it to your nextcloud domain
     restart: always
     cap_add:
       - MKNOD
