@@ -16,7 +16,7 @@ services:
       - AIO_DISABLE_BACKUP_SECTION=true #remove this line if you want backup
       - APACHE_PORT=11000
       - APACHE_IP_BINDING=0.0.0.0
-      - NEXTCLOUD_MOUNT=/media/vault/nextcloud/ #change this according to your external storage mounted location
+      - NEXTCLOUD_MOUNT=/media/vault/nextcloud/ #external storage mounted location
       - NEXTCLOUD_ENABLE_DRI_DEVICE=true #enables gpu acceleration on videos stored in nextcloud
       - NEXTCLOUD_UPLOAD_LIMIT=100G #you might want to adjust this
       - NEXTCLOUD_MAX_TIME=3600
