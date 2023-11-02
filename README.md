@@ -110,3 +110,84 @@ services:
       - 9696:9696
     restart: unless-stopped
 ```
+
+## Now nginx config for each and every services I make public to make them more optimized by enabling gzip compression
+
+### nextcloud
+
+```nginx
+client_body_buffer_size 100m;
+proxy_read_timeout 86400s;
+client_max_body_size 0;
+output_buffers 4 64k;
+proxy_hide_header Upgrade;
+proxy_hide_header X-Powered-By;
+add_header Content-Security-Policy "upgrade-insecure-requests";
+add_header X-Frame-Options "SAMEORIGIN";
+add_header X-XSS-Protection "1; mode=block" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header Cache-Control "no-transform" always;
+add_header Referrer-Policy no-referrer always;
+add_header X-Robots-Tag none;
+gzip on;
+gzip_types text/plain text/css application/json application/javascript text/xml application/xml ;
+gzip_min_length 1024;
+gzip_comp_level 6;
+gzip_buffers 16 8k;
+gzip_proxied no-cache no-store private expired auth;
+gunzip on;
+gzip_static on;
+```
+
+### collabora
+
+```nginx
+gzip on;
+gzip_types text/plain text/css application/json application/javascript text/xml application/xml ;
+gzip_min_length 1024;
+gzip_comp_level 6;
+gzip_buffers 16 8k;
+gzip_proxied no-cache no-store private expired auth;
+gunzip on;
+gzip_static on;
+```
+
+
+### jellyfin
+
+```nginx
+client_max_body_size 20m;
+output_buffers 4 64k;
+proxy_hide_header Upgrade;
+proxy_hide_header X-Powered-By;
+add_header Content-Security-Policy "upgrade-insecure-requests";
+add_header X-Frame-Options "SAMEORIGIN";
+add_header X-XSS-Protection "1; mode=block" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header Cache-Control "no-transform" always;
+add_header Referrer-Policy no-referrer always;
+add_header X-Robots-Tag none;
+gzip on;
+gzip_types text/plain text/css application/json application/javascript text/xml application/xml ;
+gzip_min_length 1024;
+gzip_comp_level 6;
+gzip_buffers 16 8k;
+gzip_proxied no-cache no-store private expired auth;
+gunzip on;
+gzip_static on;
+```
+
+### yacht
+
+```nginx
+client_max_body_size 20m;
+output_buffers 4 64k;
+gzip on;
+gzip_types text/plain text/css application/json application/javascript text/xml application/xml ;
+gzip_min_length 1024;
+gzip_comp_level 6;
+gzip_buffers 16 8k;
+gzip_proxied no-cache no-store private expired auth;
+gunzip on;
+gzip_static on;
+```
