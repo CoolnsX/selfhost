@@ -71,7 +71,7 @@ services:
     ports:
       - "9980:9980"
     environment:
-      - "extra_params=--o:ssl.enable=false --o:ssl.termination=true"
+      - "extra_params=--o:ssl.enable=false --o:ssl.termination=true --o:net.post_allow.host[0]=<ip_range_in_regex>" #must configure
       - 'domain=nextcloud.example.com' #point it to your nextcloud domain
     restart: always
     cap_add:
