@@ -93,22 +93,56 @@ services:
       - SYS_NICE
 ```
 
-### prowlarr - cause yacht default json doesn't have it :(
+### *arr stack
 
 ```yaml
 services:
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata #change accordingly
+    volumes:
+      - radarr:/config
+      - /media/vault/movies:/movies #change accordingly
+      - /media/vault/downloads:/downloads #change accordingly
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - bazarr:/config
+      - /media/vault/movies:/movies
+    ports:
+      - 6767:6767
+    restart: unless-stopped
+
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Asia/Kolkata
+      - TZ=Asia/Kolkata #change accordingly
     volumes:
-      - ./config:/config
+      - prowlarr:/config
     ports:
       - 9696:9696
     restart: unless-stopped
+
+volumes:
+  bazarr:
+  prowlarr:
+  radarr:
 ```
 
 ## Now nginx config for each and every services I make public to make them more optimized by enabling gzip compression
@@ -116,63 +150,42 @@ services:
 ### nextcloud
 
 ```nginx
-client_body_buffer_size 100m;
+client_body_buffer_size 256m;
 proxy_read_timeout 86400s;
+proxy_buffer_size 4k;
+proxy_buffers 100 8k;
+proxy_busy_buffers_size 64k;
+proxy_temp_file_write_size 64k;
 client_max_body_size 0;
 output_buffers 4 64k;
 proxy_hide_header Upgrade;
 proxy_hide_header X-Powered-By;
 gzip on;
-gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rdf+xml application/rss+xml application/schema+json application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-javascript application/x-web-app-manifest+json application/xhtml+xml application/xml font/eot font/opentype image/bmp image/svg+xml image/vnd.microsoft.icon image/x-icon text/cache-manifest text/css text/javascript text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy text/xml;
+gzip_types text/plain text/css text/javascript text/xml text/calendar text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy application/javascript application/json application/ld+json application/manifest+json application/rdf+xml application/rss+xml application/schema+json application/atom+xml application/xhtml+xml application/xml application/xml+rss application/soap+xml application/font-woff application/font-woff2 application/vnd.ms-fontobject application/x-font-ttf application/x-javascript application/x-web-app-manifest+json application/pdf application/vnd.ms-excel application/msword application/vnd.ms-powerpoint application/zip application/x-shockwave-flash application/xhtml+xml application/xslt+xml application/xml-dtd application/vnd.android.package-archive application/vnd.iphone application/vnd.wap.xhtml+xml application/xhtml+xml application/x-font-opentype application/x-font-truetype application/x-font-ttf application/x-javascript application/x-mpegURL application/x-rar-compressed application/x-shockwave-flash application/x-stuffit application/x-tar application/x-web-app-manifest+json application/xhtml+xml application/zip application/x-7z-compressed font/eot font/opentype image/bmp image/svg+xml image/vnd.microsoft.icon image/x-icon;
 gzip_min_length 1024;
-gzip_comp_level 6;
-gzip_buffers 16 8k;
+gzip_comp_level 9;
+gzip_buffers 32 8k;
 gzip_proxied no-cache no-store private expired auth;
 gunzip on;
 gzip_static on;
 ```
 
-### collabora
+### collabora | yacht | jellyfin
 
 ```nginx
-gzip on;
-gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rdf+xml application/rss+xml application/schema+json application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-javascript application/x-web-app-manifest+json application/xhtml+xml application/xml font/eot font/opentype image/bmp image/svg+xml image/vnd.microsoft.icon image/x-icon text/cache-manifest text/css text/javascript text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy text/xml;
-gzip_min_length 1024;
-gzip_comp_level 6;
-gzip_buffers 16 8k;
-gzip_proxied no-cache no-store private expired auth;
-gunzip on;
-gzip_static on;
-```
-
-
-### jellyfin
-
-```nginx
-client_max_body_size 20m;
+client_max_body_size 50m;
 output_buffers 4 64k;
 proxy_hide_header Upgrade;
 proxy_hide_header X-Powered-By;
+proxy_buffer_size 4k;
+proxy_buffers 100 8k;
+proxy_busy_buffers_size 64k;
+proxy_temp_file_write_size 64k;
 gzip on;
-gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rdf+xml application/rss+xml application/schema+json application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-javascript application/x-web-app-manifest+json application/xhtml+xml application/xml font/eot font/opentype image/bmp image/svg+xml image/vnd.microsoft.icon image/x-icon text/cache-manifest text/css text/javascript text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy text/xml;
+gzip_types text/plain text/css text/javascript text/xml text/calendar text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy application/javascript application/json application/ld+json application/manifest+json application/rdf+xml application/rss+xml application/schema+json application/atom+xml application/xhtml+xml application/xml application/xml+rss application/soap+xml application/font-woff application/font-woff2 application/vnd.ms-fontobject application/x-font-ttf application/x-javascript application/x-web-app-manifest+json application/pdf application/vnd.ms-excel application/msword application/vnd.ms-powerpoint application/zip application/x-shockwave-flash application/xhtml+xml application/xslt+xml application/xml-dtd application/vnd.android.package-archive application/vnd.iphone application/vnd.wap.xhtml+xml application/xhtml+xml application/x-font-opentype application/x-font-truetype application/x-font-ttf application/x-javascript application/x-mpegURL application/x-rar-compressed application/x-shockwave-flash application/x-stuffit application/x-tar application/x-web-app-manifest+json application/xhtml+xml application/zip application/x-7z-compressed font/eot font/opentype image/bmp image/svg+xml image/vnd.microsoft.icon image/x-icon;
 gzip_min_length 1024;
-gzip_comp_level 6;
-gzip_buffers 16 8k;
-gzip_proxied no-cache no-store private expired auth;
-gunzip on;
-gzip_static on;
-```
-
-### yacht
-
-```nginx
-client_max_body_size 20m;
-output_buffers 4 64k;
-gzip on;
-gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rdf+xml application/rss+xml application/schema+json application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-javascript application/x-web-app-manifest+json application/xhtml+xml application/xml font/eot font/opentype image/bmp image/svg+xml image/vnd.microsoft.icon image/x-icon text/cache-manifest text/css text/javascript text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy text/xml;
-gzip_min_length 1024;
-gzip_comp_level 6;
-gzip_buffers 16 8k;
+gzip_comp_level 9;
+gzip_buffers 32 8k;
 gzip_proxied no-cache no-store private expired auth;
 gunzip on;
 gzip_static on;
