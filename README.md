@@ -3,7 +3,6 @@
 This repo contains the docker compose of each and every services that is self-hosted by me and already tuned to my preferences
 
 ### Nextcloud and yacht together
-
 ```yaml
 services:
   nextcloud:
@@ -42,11 +41,80 @@ volumes:
     name: nextcloud_aio_mastercontainer
   yacht:
 ```
+### *arr stack
+```yaml
+version: '3'
+services:
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - radarr:/config
+      - /media/vault/movies:/movies #change accordingly
+      - /media/vault/downloads:/downloads #change accordingly
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - bazarr:/config
+      - /media/vault/movies:/movies #change accordingly
+    ports:
+      - 6767:6767
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - prowlarr:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      - transmission:/config
+      - /media/vault/downloads:/downloads #change accordingly
+      - /media/vault/watch:/watch #change accordingly
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+
+volumes:
+  bazarr:
+  prowlarr:
+  radarr:
+  transmission:
+```
+
 
 ## Below are the services that are put on another server
 
 ### Nginx Proxy Manager
-
 ```yaml
 services:
   app:
@@ -62,7 +130,6 @@ services:
 ```
 
 ### Collabora (if hosting on another server)
-
 ```yaml
 services:
   collabora:
@@ -79,7 +146,6 @@ services:
 ```
 
 ### Imaginary (if hosing on another server)
-
 ```yaml
 services:
   imaginary:
@@ -93,62 +159,9 @@ services:
       - SYS_NICE
 ```
 
-### *arr stack
-
-```yaml
-services:
-  radarr:
-    image: lscr.io/linuxserver/radarr:latest
-    container_name: radarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata #change accordingly
-    volumes:
-      - radarr:/config
-      - /media/vault/movies:/movies #change accordingly
-      - /media/vault/downloads:/downloads #change accordingly
-    ports:
-      - 7878:7878
-    restart: unless-stopped
-
-  bazarr:
-    image: lscr.io/linuxserver/bazarr:latest
-    container_name: bazarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-    volumes:
-      - bazarr:/config
-      - /media/vault/movies:/movies
-    ports:
-      - 6767:6767
-    restart: unless-stopped
-
-  prowlarr:
-    image: lscr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata #change accordingly
-    volumes:
-      - prowlarr:/config
-    ports:
-      - 9696:9696
-    restart: unless-stopped
-
-volumes:
-  bazarr:
-  prowlarr:
-  radarr:
-```
-
 ## Now nginx config for each and every services I make public to make them more optimized by enabling gzip compression
 
 ### nextcloud
-
 ```nginx
 client_body_buffer_size 256m;
 proxy_read_timeout 86400s;
@@ -171,11 +184,10 @@ gzip_static on;
 ```
 
 ### collabora | yacht | jellyfin
-
 ```nginx
 client_max_body_size 50m;
 output_buffers 4 64k;
-proxy_hide_header Upgrade;
+proxy_hide_header Upgrade; #remove this for collabora in nginx proxy manager
 proxy_hide_header X-Powered-By;
 proxy_buffer_size 4k;
 proxy_buffers 100 8k;
