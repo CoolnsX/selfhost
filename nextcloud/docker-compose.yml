@@ -1,0 +1,44 @@
+services:
+  nextcloud:
+    image: nextcloud/all-in-one:latest-arm64
+    restart: unless-stopped
+    container_name: nextcloud-aio-mastercontainer
+    ports:
+      - "8080:8080"
+    environment:
+      - AIO_DISABLE_BACKUP_SECTION=true
+      - APACHE_PORT=11000
+      - APACHE_IP_BINDING=0.0.0.0
+      - NEXTCLOUD_MOUNT=/media/vault/nextcloud/
+      - NEXTCLOUD_ENABLE_DRI_DEVICE=true
+      - NEXTCLOUD_UPLOAD_LIMIT=100G
+      - NEXTCLOUD_MAX_TIME=3600
+      - NEXTCLOUD_MEMORY_LIMIT=1024M
+      - SKIP_DOMAIN_VALIDATION=true
+      - NEXTCLOUD_KEEP_DISABLED_APPS=true
+    volumes:
+      - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - coolans
+
+  watchtower:
+    image: containrrr/watchtower
+    restart: unless-stopped
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - coolans
+    environment:
+      - TZ=Asia/Kolkata
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_SCHEDULE=0 0 2 * * *
+
+volumes:
+  nextcloud_aio_mastercontainer:
+    name: nextcloud_aio_mastercontainer
+
+networks:
+  coolans:
+    name: coolans
