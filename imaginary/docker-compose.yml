@@ -1,0 +1,18 @@
+services:
+  imaginary:
+    restart: unless-stopped
+    image: nextcloud/aio-imaginary:latest
+    container_name: imaginary
+    environment:
+       PORT: 11000
+    command: -enable-url-source -cors
+    ports:
+      - "100.64.0.2:11000:11000"
+    networks:
+      - nginx_proxy
+    cap_add:
+      - SYS_NICE
+
+networks:
+  nginx_proxy:
+    external: true
