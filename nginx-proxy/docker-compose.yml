@@ -24,7 +24,7 @@ services:
     environment:
       - TZ=Asia/Kolkata
       - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE=0 0 9 * * *
+      - WATCHTOWER_SCHEDULE=0 0 2 * * *
 
 networks:
   nginx_proxy:
