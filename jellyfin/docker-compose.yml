@@ -19,6 +19,12 @@ services:
       - /dev/video11:/dev/video11
       - /dev/video12:/dev/video12
     restart: unless-stopped
+    networks:
+      - starr
 
 volumes:
   jellyfin:
+
+networks:
+  starr:
+    external: true
