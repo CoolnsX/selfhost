@@ -4,13 +4,13 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - radarr:/config
-      - /media/vault/data:/data
+      - $DATA:/data
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -24,13 +24,13 @@ services:
     ports:
       - 8989:8989
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - sonarr:/config
-      - /media/vault/data:/data
+      - $DATA:/data
     networks:
       - starr
 
@@ -38,13 +38,13 @@ services:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - bazarr:/config
-      - /media/vault/data/media:/data/media
+      - $DATA/media:/data/media
     ports:
       - 6767:6767
     restart: unless-stopped
@@ -55,9 +55,9 @@ services:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - prowlarr:/config
@@ -71,18 +71,41 @@ services:
     image: lscr.io/linuxserver/transmission:latest
     container_name: transmission
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - transmission:/config
-      - /media/vault/data/downloads:/downloads
-      - /media/vault/data/watch:/watch
+      - $DATA/downloads:/downloads
+      - $DATA/watch:/watch
     ports:
       - 9091:9091
       - 51413:51413
       - 51413:51413/udp
+    restart: unless-stopped
+    networks:
+      - starr
+
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - JELLYFIN_PublishedServerUrl=192.168.1.2
+    volumes:
+      - jellyfin:/config
+      - $DATA/media:/data
+    ports:
+      - 8096:8096
+      - 7359:7359/udp # optional
+      - 1900:1900/udp # optional
+    devices:
+      - /dev/video10:/dev/video10
+      - /dev/video11:/dev/video11
+      - /dev/video12:/dev/video12
     restart: unless-stopped
     networks:
       - starr
@@ -93,6 +116,8 @@ volumes:
   radarr:
   transmission:
   sonarr:
+  jellyfin:
+    name: jellyfin_jellyfin
 
 networks:
   starr:

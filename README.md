@@ -2,7 +2,9 @@
 
 This repo contains the docker compose of each and every services that is self-hosted by me and already tuned to my preferences
 
-### Nextcloud and yacht together
+Note: Please move the env.example in some directory to .env with the preferred values set before proceeding.
+
+### Nextcloud
 ```yaml
 services:
   nextcloud:
@@ -26,20 +28,9 @@ services:
       - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  yacht:
-    container_name: yacht
-    restart: unless-stopped
-    ports:
-      - 8000:8000
-    volumes:
-      - yacht:/config
-      - /var/run/docker.sock:/var/run/docker.sock
-    image: selfhostedpro/yacht:latest
-
 volumes:
   nextcloud_aio_mastercontainer:
     name: nextcloud_aio_mastercontainer
-  yacht:
 ```
 ### *arr stack
 ```yaml
@@ -51,7 +42,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Asia/Kolkata
+      - TZ=etc/UTC
     volumes:
       - radarr:/config
       - /media/vault/movies:/movies #change accordingly
@@ -66,7 +57,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Asia/Kolkata
+      - TZ=etc/UTC
     volumes:
       - bazarr:/config
       - /media/vault/movies:/movies #change accordingly
@@ -80,7 +71,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Asia/Kolkata
+      - TZ=etc/UTC
     volumes:
       - prowlarr:/config
     ports:
@@ -93,7 +84,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Asia/Kolkata
+      - TZ=etc/UTC
     volumes:
       - transmission:/config
       - /media/vault/downloads:/downloads #change accordingly
@@ -183,7 +174,7 @@ gunzip on;
 gzip_static on;
 ```
 
-### collabora | yacht | jellyfin
+### collabora | jellyfin
 ```nginx
 client_max_body_size 50m;
 output_buffers 4 64k;
