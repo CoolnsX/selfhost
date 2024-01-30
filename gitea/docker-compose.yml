@@ -1,0 +1,28 @@
+version: "3"
+
+networks:
+  gitea:
+    external: false
+
+services:
+  server:
+    image: gitea/gitea:latest
+    container_name: gitea
+    environment:
+      - USER_UID=1001
+      - USER_GID=1001
+      - DISABLE_REGISTRATION=True
+    volumes:
+      - ./gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      #- "3000:3000"
+      - "2222:22"
+    restart: unless-stopped
+    networks: 
+      - nginx_proxy
+
+networks:
+  nginx_proxy:
+    external: true
