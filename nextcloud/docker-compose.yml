@@ -22,19 +22,6 @@ services:
     networks:
       - coolans
 
-  watchtower:
-    image: containrrr/watchtower
-    restart: unless-stopped
-    container_name: watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - coolans
-    environment:
-      - TZ=Asia/Kolkata
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE=0 0 2 * * *
-
 volumes:
   nextcloud_aio_mastercontainer:
     name: nextcloud_aio_mastercontainer
