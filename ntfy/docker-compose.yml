@@ -1,0 +1,28 @@
+services:
+  ntfy:
+    image: binwiederhier/ntfy:latest
+    container_name: ntfy
+    command:
+      - serve
+    environment:
+      - TZ=Asia/Kolkata    # optional: set desired timezone
+      - NTFY_BASE_URL=https://ntfy.coolans.dev
+      - NTFY_CACHE_FILE=/var/lib/ntfy/cache.db
+      - NTFY_AUTH_FILE=/var/lib/ntfy/auth.db
+      - NTFY_AUTH_DEFAULT_ACCESS=deny-all
+      - NTFY_LISTEN_HTTP=:7777
+      - NTFY_BEHIND_PROXY=true
+      - NTFY_ATTACHMENT_CACHE_DIR=/var/lib/ntfy/attachments
+      - NTFY_ENABLE_LOGIN=true
+      - PUID=1001
+      - PGID=1001
+    user: 1001:1001
+    volumes:
+      - ./ntfy:/var/lib/ntfy
+    restart: unless-stopped
+    networks:
+      - nginx_proxy
+
+networks:
+  nginx_proxy:
+    external: true
