@@ -9,6 +9,6 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     ports:
-      - "100.64.0.2:11000:11000"
+      - "11000:11000"
     cap_add:
       - SYS_NICE
