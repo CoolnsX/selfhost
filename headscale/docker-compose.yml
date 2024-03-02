@@ -1,0 +1,20 @@
+services:
+  headscale:
+    container_name: headscale
+      #image: headscale/headscale:latest
+      #image: headscale/headscale:0.23.0
+    image: headscale/headscale:unstable
+    command: serve
+    restart: unless-stopped
+    volumes:
+        - ./config:/etc/headscale/
+        - ./data:/var/lib/headscale/
+        - ./run:/var/run/headscale/
+    networks: 
+        - nginx_proxy
+    ports:
+        - "3478:3478/udp"
+
+networks:
+  nginx_proxy:
+    external: true

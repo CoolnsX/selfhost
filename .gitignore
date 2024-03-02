@@ -1,4 +1,4 @@
 *
 */
-!docker-compose.yml
-!env.example
+!*docker-compose.yml
+!*env.example
