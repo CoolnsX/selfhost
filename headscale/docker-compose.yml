@@ -2,8 +2,7 @@ services:
   headscale:
     container_name: headscale
       #image: headscale/headscale:latest
-      #image: headscale/headscale:0.23.0
-    image: headscale/headscale:unstable
+    image: headscale/headscale:0.23.0
     command: serve
     restart: unless-stopped
     volumes:
