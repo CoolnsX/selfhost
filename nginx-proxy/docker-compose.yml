@@ -12,6 +12,9 @@ services:
       - ./letsencrypt:/etc/letsencrypt
     networks:
       - nginx_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
 
 networks:
   nginx_proxy:
