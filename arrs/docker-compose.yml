@@ -103,12 +103,9 @@ services:
       - 7359:7359/udp # optional
       - 1900:1900/udp # optional
     devices:
-      - /dev/video10:/dev/video10
-      - /dev/video11:/dev/video11
-      - /dev/video12:/dev/video12
+      - /dev/dri/renderD128
     restart: unless-stopped
-    networks:
-      - starr
+    network_mode: host
 
 volumes:
   bazarr:
@@ -117,7 +114,6 @@ volumes:
   transmission:
   sonarr:
   jellyfin:
-    name: jellyfin_jellyfin
 
 networks:
   starr:

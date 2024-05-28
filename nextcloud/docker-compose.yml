@@ -1,6 +1,6 @@
 services:
   nextcloud:
-    image: nextcloud/all-in-one:latest-arm64
+    image: nextcloud/all-in-one:latest
     restart: unless-stopped
     container_name: nextcloud-aio-mastercontainer
     ports:
