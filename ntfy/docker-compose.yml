@@ -13,7 +13,7 @@ services:
       - NTFY_LISTEN_HTTP=:7777
       - NTFY_BEHIND_PROXY=true
       - NTFY_ATTACHMENT_CACHE_DIR=/var/lib/ntfy/attachments
-      - NTFY_ENABLE_LOGIN=true
+      - NTFY_ENABLE_LOGIN=false
       - PUID=1001
       - PGID=1001
     user: 1001:1001

@@ -2,8 +2,9 @@ services:
   headscale:
     container_name: headscale
       #image: headscale/headscale:latest
-    image: headscale/headscale:0.23.0
-    command: serve
+    image: headscale/headscale:0.22.0
+      #command: serve
+    command: headscale serve
     restart: unless-stopped
     volumes:
         - ./config:/etc/headscale/

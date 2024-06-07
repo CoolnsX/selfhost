@@ -10,6 +10,7 @@ services:
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
+      - ./server_proxy.conf:/data/nginx/custom/server_proxy.conf
     networks:
       - nginx_proxy
     environment:

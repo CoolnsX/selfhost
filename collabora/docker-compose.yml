@@ -8,7 +8,6 @@ services:
       - "aliasgroup1=$CLOUD"
       - 'domain=$CLOUD'
       - DONT_GEN_SSL_CERT=true
-      - dictionaries="en_GB en_US"
     restart: unless-stopped
     networks: 
       - nginx_proxy
