@@ -7,13 +7,13 @@ services:
     environment:
       - USER_UID=1001
       - USER_GID=1001
-      - DISABLE_REGISTRATION=True
+      - DISABLE_REGISTRATION=true
     volumes:
       - ./gitea:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-    ports:
-      - "2222:22"
+        #ports:
+        #  - "2222:22"
     restart: unless-stopped
     networks: 
       - nginx_proxy

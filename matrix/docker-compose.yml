@@ -1,0 +1,48 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:15-alpine
+    restart: unless-stopped
+    volumes:
+      - $DATABASE_DIR:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    networks: 
+      - nginx_proxy
+
+  synapse:
+    container_name: synapse
+    image: matrixdotorg/synapse:latest
+    restart: unless-stopped
+    environment:
+      - SYNAPSE_CONFIG_PATH=/data/homeserver.yaml
+      - SYNAPSE_SERVER_NAME=$SYNAPSE_SERVER_NAME
+      - SYNAPSE_REPORT_STATS=yes
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_DB=$POSTGRES_DATABASE
+      - POSTGRES_HOST=postgres
+      - UID=$PUID
+      - GID=$PGID
+      - TZ=$TZ
+    networks:
+      - nginx_proxy
+    volumes:
+      - ./synapse:/data
+    depends_on:
+      - postgres
+
+  element:
+    container_name: element
+    image: vectorim/element-web:latest
+    restart: unless-stopped
+    volumes:
+      - $ELEMENT_CONFIG_JSON:/app/config.json
+    networks:
+      - nginx_proxy
+
+networks:
+  nginx_proxy:
+    external: true
