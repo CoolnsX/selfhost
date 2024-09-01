@@ -1,0 +1,21 @@
+services:
+  coturn:
+    image: coturn/coturn:alpine
+    privileged: true
+    container_name: coturn
+    command: -n --log-file=stdout
+    volumes:
+      - ./turnserver.conf:/etc/coturn/turnserver.conf
+    restart: unless-stopped
+    ports:
+      - "3478:3478/udp"
+      - "3478:3478"
+      - "5349:5349"
+      - "5349:5349/udp"
+      - "49160-49200:49160-49200/udp"
+    networks:
+      - nginx_proxy
+
+networks:
+  nginx_proxy:
+    name: nginx_proxy

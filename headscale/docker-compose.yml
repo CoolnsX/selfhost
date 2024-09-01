@@ -12,8 +12,6 @@ services:
         - ./run:/var/run/headscale/
     networks: 
         - nginx_proxy
-    ports:
-        - "3478:3478/udp"
 
 networks:
   nginx_proxy:
