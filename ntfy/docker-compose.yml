@@ -14,9 +14,9 @@ services:
       - NTFY_BEHIND_PROXY=true
       - NTFY_ATTACHMENT_CACHE_DIR=/var/lib/ntfy/attachments
       - NTFY_ENABLE_LOGIN=false
-      - PUID=1001
-      - PGID=1001
-    user: 1001:1001
+      - PUID=1000
+      - PGID=1000
+    user: 1000:1000
     volumes:
       - ./ntfy:/var/lib/ntfy
     restart: unless-stopped

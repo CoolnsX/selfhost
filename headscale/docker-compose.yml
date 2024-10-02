@@ -1,10 +1,8 @@
 services:
   headscale:
     container_name: headscale
-      #image: headscale/headscale:latest
-    image: headscale/headscale:0.22.0
-      #command: serve
-    command: headscale serve
+    image: headscale/headscale:latest
+    command: serve
     restart: unless-stopped
     volumes:
         - ./config:/etc/headscale/
@@ -13,6 +11,8 @@ services:
     networks: 
         - nginx_proxy
 
+    ports:
+        - "45001:45001/udp"
 networks:
   nginx_proxy:
     external: true

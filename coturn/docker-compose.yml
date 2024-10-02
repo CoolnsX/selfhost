@@ -18,4 +18,4 @@ services:
 
 networks:
   nginx_proxy:
-    name: nginx_proxy
+    external: true
