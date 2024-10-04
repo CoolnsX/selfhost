@@ -16,6 +16,7 @@ services:
       - NEXTCLOUD_MEMORY_LIMIT=1024M
       - SKIP_DOMAIN_VALIDATION=true
       - NEXTCLOUD_KEEP_DISABLED_APPS=true
+      - NEXTCLOUD_DATADIR=/home/tanveer/nextcloud
     volumes:
       - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
       - /var/run/docker.sock:/var/run/docker.sock:ro
