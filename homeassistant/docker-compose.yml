@@ -17,6 +17,5 @@ services:
       - ./esphome/config:/config
       - /etc/localtime:/etc/localtime:ro
     restart: always
-    privileged: true
     network_mode: host
 
