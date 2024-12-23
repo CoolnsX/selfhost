@@ -12,7 +12,7 @@ services:
         - nginx_proxy
 
     ports:
-        - "45001:45001/udp"
+        - "3478:3478/udp"
 networks:
   nginx_proxy:
     external: true
