@@ -9,8 +9,8 @@ services:
     environment:
       - MARIADB_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD
       - MARIADB_PASSWORD=$MARIADB_PASSWORD
-      - MARIADB_DATABASE=nextcloud
-      - MARIADB_USER=nextcloud
+      - MARIADB_DATABASE=$MARIADB_DATABASE
+      - MARIADB_USER=$MARIADB_USER
 
   app:
     container_name: nextcloud
@@ -24,11 +24,11 @@ services:
     volumes:
       - $HOME/nextcloud:/data
       - ./config:/config
-      - /media/vault/nextcloud:/media/vault/nextcloud
+      - $EXTERNAL_DIR:$EXTERNAL_DIR
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Kolkata
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
 
   redis:
     container_name: nextcloud_redis
