@@ -1,32 +1,49 @@
 services:
-  nextcloud:
-    image: nextcloud/all-in-one:latest
+  db:
+    container_name: nextcloud_db
+    image: mariadb:latest
     restart: unless-stopped
-    container_name: nextcloud-aio-mastercontainer
-    ports:
-      - "8080:8080"
-    environment:
-      - AIO_DISABLE_BACKUP_SECTION=true
-      - APACHE_PORT=11000
-      - APACHE_IP_BINDING=0.0.0.0
-      - NEXTCLOUD_MOUNT=/media/vault/nextcloud/
-      - NEXTCLOUD_ENABLE_DRI_DEVICE=true
-      - NEXTCLOUD_UPLOAD_LIMIT=100G
-      - NEXTCLOUD_MAX_TIME=3600
-      - NEXTCLOUD_MEMORY_LIMIT=1024M
-      - SKIP_DOMAIN_VALIDATION=true
-      - NEXTCLOUD_KEEP_DISABLED_APPS=true
-      - NEXTCLOUD_DATADIR=/home/tanveer/nextcloud
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
     volumes:
-      - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - coolans
+      - ./db:/var/lib/mysql
+    environment:
+      - MARIADB_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD
+      - MARIADB_PASSWORD=$MARIADB_PASSWORD
+      - MARIADB_DATABASE=nextcloud
+      - MARIADB_USER=nextcloud
 
-volumes:
-  nextcloud_aio_mastercontainer:
-    name: nextcloud_aio_mastercontainer
+  app:
+    container_name: nextcloud
+    image: lscr.io/linuxserver/nextcloud:latest
+    restart: unless-stopped
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - $HOME/nextcloud:/data
+      - ./config:/config
+      - /media/vault/nextcloud:/media/vault/nextcloud
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
 
-networks:
-  coolans:
-    name: coolans
+  redis:
+    container_name: nextcloud_redis
+    image: redis:alpine
+    restart: unless-stopped
+    command: redis-server
+
+  imaginary:
+    restart: unless-stopped
+    image: nextcloud/aio-imaginary:latest
+    container_name: nextcloud_imaginary
+    environment:
+       PORT: 11000
+    command: -enable-url-source -cors
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    cap_add:
+      - SYS_NICE
