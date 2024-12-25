@@ -29,6 +29,7 @@ services:
       - PUID=$PUID
       - PGID=$PGID
       - TZ=$TZ
+      - DOCKER_MODS=linuxserver/mods:nextcloud-notify-push
 
   redis:
     container_name: nextcloud_redis
