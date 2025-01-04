@@ -1,9 +1,18 @@
 services:
+  tmp:
+    container_name: nextcloud_init
+    image: busybox
+    command: sh -c "chown -R $PUID:$PUID /tmp/docker/ && chmod -R 777 /tmp/docker/"
+    volumes:
+      - /tmp/docker:/tmp/docker
+
   db:
     container_name: nextcloud_db
     image: mariadb:lts
     restart: unless-stopped
-    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW --socket=/tmp/docker/mysqld.sock
+    depends_on:
+      - tmp
     volumes:
       - ./db:/var/lib/mysql
     environment:
@@ -11,6 +20,8 @@ services:
       - MARIADB_PASSWORD=$MARIADB_PASSWORD
       - MARIADB_DATABASE=$MARIADB_DATABASE
       - MARIADB_USER=$MARIADB_USER
+    volumes_from:
+      - tmp
 
   app:
     container_name: nextcloud
@@ -30,12 +41,21 @@ services:
       - PGID=$PGID
       - TZ=$TZ
       - DOCKER_MODS=linuxserver/mods:nextcloud-notify-push
+    volumes_from:
+      - tmp
 
   redis:
     container_name: nextcloud_redis
     image: redis:alpine
     restart: unless-stopped
-    command: redis-server
+    depends_on:
+      - tmp
+    volumes:
+      - ./redis:/data
+    user: "999:$PUID"
+    command: redis-server --unixsocket /tmp/docker/redis.sock --unixsocketperm 777
+    volumes_from:
+      - tmp
 
   imaginary:
     restart: unless-stopped
@@ -43,7 +63,7 @@ services:
     container_name: nextcloud_imaginary
     environment:
        PORT: 11000
-    command: -enable-url-source -cors
+    command: -enable-url-source -cors -return-size
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     cap_add:
