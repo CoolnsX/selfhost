@@ -1,7 +1,7 @@
 services:
   db:
     container_name: nextcloud_db
-    image: mariadb:latest
+    image: mariadb:lts
     restart: unless-stopped
     command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
     volumes:

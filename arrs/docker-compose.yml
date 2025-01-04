@@ -74,7 +74,6 @@ services:
       - PUID=$PUID
       - PGID=$PGID
       - TZ=$TZ
-      - DOCKER_MODS=linuxserver/mods:transmission-transmissionic
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - transmission:/config
