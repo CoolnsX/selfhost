@@ -7,30 +7,33 @@ services:
       - $DATABASE_DIR:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-      - POSTGRES_USER=dendrite
-      - POSTGRES_DATABASE=dendrite
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dendrite"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
     networks: 
       - nginx_proxy
 
-  dendrite:
-    container_name: dendrite
-    image: matrixdotorg/dendrite-monolith:latest
-    depends_on:
-      postgres:
-        condition: service_healthy
+  synapse:
+    container_name: synapse
+    image: matrixdotorg/synapse:latest
     restart: unless-stopped
     environment:
+      - SYNAPSE_CONFIG_PATH=/data/homeserver.yaml
+      - SYNAPSE_SERVER_NAME=$SYNAPSE_SERVER_NAME
+      - SYNAPSE_REPORT_STATS=yes
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_DB=$POSTGRES_DATABASE
+      - POSTGRES_HOST=postgres
+      - UID=$PUID
+      - GID=$PGID
       - TZ=$TZ
     networks:
       - nginx_proxy
     volumes:
-      - ./config:/etc/dendrite
-      - ./dendrite:/var/dendrite
+      - ./synapse:/data
+    depends_on:
+      - postgres
+        # command: migrate_config # uncomment this if running first time after filling values in .env
 
   element:
     container_name: element
