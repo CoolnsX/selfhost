@@ -46,6 +46,7 @@ services:
     restart: unless-stopped
     image: nextcloud/aio-imaginary:latest
     container_name: nextcloud_imaginary
+    stop_grace_period: 5s
     environment:
        PORT: 11000
     command: -enable-url-source -cors -return-size
