@@ -1,7 +1,6 @@
 services:
   collabora:
-    #image: collabora/code:latest
-    image: collabora/code:24.04.12.4.1
+    image: collabora/code:latest
     privileged: true
     container_name: collabora
     environment:
